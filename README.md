@@ -60,7 +60,7 @@ shell.on("gl-render", function(t) {
 
 Here is the result:
 
-<img src="screenshot.png">
+<img src="https://raw.github.com/mikolalysenko/gl-shader/master/screenshot.png">
 
 # Install
 
