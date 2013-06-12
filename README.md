@@ -4,6 +4,8 @@ Simple wrapper for WebGL shaders
 
 # Example
 
+Try it out now in your browser:  [http://mikolalysenko.github.io/gl-shader/](http://mikolalysenko.github.io/gl-shader/)
+
 ```javascript
 var shell = require("gl-now")()
 var createShader = require("gl-shader")
@@ -55,6 +57,10 @@ shell.on("gl-render", function(t) {
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 })
 ```
+
+Here is the result:
+
+<img src="screenshot.png">
 
 # Install
 
