@@ -19,6 +19,9 @@ function kvPairs(obj) {
 }
 
 function makeVectorUniform(gl, prog, location, obj, type, d, name) {
+  if(d > 1) {
+    type += "v"
+  }
   var setter = new Function("gl", "loc", "v", "gl.uniform" + d + type + "(loc, v)")
   var getter = new Function("gl", "prog", "loc", "return gl.getUniform(prog, loc)")
   Object.defineProperty(obj, name, {
@@ -29,7 +32,7 @@ function makeVectorUniform(gl, prog, location, obj, type, d, name) {
 }
 
 function makeMatrixUniform(gl, prog, location, obj, d, name) {
-  var setter = new Function("gl", "loc", "v", "gl.uniform" + d + type + "(loc, v)")
+  var setter = new Function("gl", "loc", "v", "gl.uniformMatrix" + d + type + "v(loc, v)")
   var getter = new Function("gl", "prog", "loc", "return gl.getUniform(prog, loc)")
   Object.defineProperty(obj, name, {
     set: setter.bind(undefined, gl, location),
@@ -163,7 +166,7 @@ function makeShader(gl, vert_source, frag_source) {
             break
             
             case "v":
-              makeVectorUniform(gl, program, x, uniform_fields, "i", d, name)
+              makeVectorUniform(gl, program, x, uniform_fields, "f", d, name)
             break
             
             default:

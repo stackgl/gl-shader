@@ -15,10 +15,10 @@ shell.on("gl-init", function() {
       uv = position.xy;\
     }",
     "precision highp float;\
-    uniform float t;\
+    uniform vec2 tp;\
     varying vec2 uv;\
     void main() {\
-      gl_FragColor = vec4(0.5*(uv+1.0), 0.5*(cos(t)+1.0), 1.0);\
+      gl_FragColor = vec4(0.5*(uv+1.0), 0.5*(cos(tp.x)+1.0), 1.0);\
     }")
 
   //Create vertex buffer
@@ -43,7 +43,7 @@ shell.on("gl-render", function(t) {
   shader.attributes.position.enable()
 
   //Set uniforms
-  shader.uniforms.t += 0.01
+  shader.uniforms.tp = [Date.now(), 10]
 
   //Draw
   gl.drawArrays(gl.TRIANGLES, 0, 3)
