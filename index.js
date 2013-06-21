@@ -70,19 +70,19 @@ function makeVectorAttrib(gl, prog, location, obj, d, name) {
   }
   constFuncArgs.push([
     "if(x0.length === undefined) {",
-      "return gl.vertexAttrib"+d+"f(" + var_names.join(",") + ")",
+      "return gl.vertexAttrib"+d+"f(v," + var_names.join(",") + ")",
     "} else {",
-      "return gl.vertexAttrib" + d + "fv(x0)",
+      "return gl.vertexAttrib" + d + "fv(v,x0)",
     "}"
   ].join("\n"))
   var constFunc = Function.apply(undefined, constFuncArgs)
   out.set = function setAttrib(x, y, z, w) {
-    return constFunc(gl, v, x, y, z, w)
+    return constFunc(gl, location, x, y, z, w)
   }
   Object.defineProperty(obj, name, {
     set: function(x) {
       out.isArray = false
-      constFunc(gl, v, x)
+      constFunc(gl, location, x)
       return x
     },
     get: function() {
