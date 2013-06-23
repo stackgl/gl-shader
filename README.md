@@ -2,6 +2,8 @@ gl-shader
 =========
 Simple wrapper for WebGL shaders
 
+**WORK IN PROGRESS**
+
 # Example
 
 Try it out now in your browser:  [http://mikolalysenko.github.io/gl-shader/](http://mikolalysenko.github.io/gl-shader/)

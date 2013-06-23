@@ -32,7 +32,7 @@ function makeVectorUniform(gl, prog, location, obj, type, d, name) {
 }
 
 function makeMatrixUniform(gl, prog, location, obj, d, name) {
-  var setter = new Function("gl", "loc", "v", "gl.uniformMatrix" + d + type + "v(loc, v)")
+  var setter = new Function("gl", "loc", "v", "gl.uniformMatrix" + d + "fv(loc, false, v)")
   var getter = new Function("gl", "prog", "loc", "return gl.getUniform(prog, loc)")
   Object.defineProperty(obj, name, {
     set: setter.bind(undefined, gl, location),
@@ -173,7 +173,7 @@ function makeShader(gl, vert_source, frag_source) {
               throw new Error("Unrecognized data type")
           }
         } else if(type.charAt(0) === "m") {
-          var d = type.charCodeAt(u.type.length-1) - 48
+          var d = type.charCodeAt(type.length-1) - 48
           if(d < 2 || d > 4) {
             throw new Error("Invalid data type")
           }
