@@ -22,21 +22,21 @@ function makeVectorUniform(gl, prog, location, obj, type, d, name) {
   if(d > 1) {
     type += "v"
   }
-  var setter = new Function("gl", "loc", "v", "gl.uniform" + d + type + "(loc, v)")
-  var getter = new Function("gl", "prog", "loc", "return gl.getUniform(prog, loc)")
+  var setter = new Function("gl", "prog", "v", "gl.uniform" + d + type + "(gl.getUniformLocation(prog,'"+name+"'), v)")
+  var getter = new Function("gl", "prog", "return gl.getUniform(prog, gl.getUniformLocation(prog,'"+name+"'))")
   Object.defineProperty(obj, name, {
-    set: setter.bind(undefined, gl, location),
-    get: getter.bind(undefined, gl, prog, location),
+    set: setter.bind(undefined, gl, prog),
+    get: getter.bind(undefined, gl, prog),
     enumerable: true
   })
 }
 
 function makeMatrixUniform(gl, prog, location, obj, d, name) {
-  var setter = new Function("gl", "loc", "v", "gl.uniformMatrix" + d + "fv(loc, false, v)")
-  var getter = new Function("gl", "prog", "loc", "return gl.getUniform(prog, loc)")
+  var setter = new Function("gl", "prog", "v", "gl.uniformMatrix" + d + "fv(gl.getUniformLocation(prog,'"+name+"'), false, v)")
+  var getter = new Function("gl", "prog", "return gl.getUniform(prog, gl.getUniformLocation(prog,'"+name+"'))")
   Object.defineProperty(obj, name, {
-    set: setter.bind(undefined, gl, location),
-    get: getter.bind(undefined, gl, prog, location),
+    set: setter.bind(undefined, gl, prog),
+    get: getter.bind(undefined, gl, prog),
     enumerable: true
   })
 }
@@ -57,8 +57,11 @@ function makeVectorAttrib(gl, prog, location, obj, d, name) {
       return location
     },
     set: function(v) {
-      location = v
-      gl.bindAttribLocation(prog, v, name)
+      if(v !== location) {
+        location = v
+        gl.bindAttribLocation(prog, v, name)
+        gl.linkProgram(prog)
+      }
       return v
     }
   })
