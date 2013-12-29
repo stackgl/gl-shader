@@ -1,6 +1,6 @@
 {
   "name": "gl-shader",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "description": "WebGL shader wrapper",
   "main": "index.js",
   "directories": {
@@ -8,13 +8,16 @@
   },
   "dependencies": {
     "uniq": "~0.0.2",
-    "glsl-exports": "~0.0.0"
+    "gl-shader-core": "~0.0.0",
+    "glsl-extract": "~0.0.2",
+    "through": "~2.3.4"
   },
   "devDependencies": {
     "gl-now": "~0.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "beefy --open example/example.js"
   },
   "repository": {
     "type": "git",

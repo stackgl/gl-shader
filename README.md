@@ -96,7 +96,7 @@ gl.useProgram(shader.program)
 ```
 
 ## Uniforms
-The uniforms for the shader program are parsed at compile time using [glsl-exports](https://github.com/mikolalysenko/glsl-exports) and packaged up as properties in the `shader.uniforms` object.  For example, to update a scalar uniform you can just assign to it:
+The uniforms for the shader program are packaged up as properties in the `shader.uniforms` object.  For example, to update a scalar uniform you can just assign to it:
 
 ```javascript
 shader.uniforms.scalar = 1.0
@@ -123,6 +123,12 @@ You can also read the value of uniform too if the underlying shader is currently
 console.log(shader.uniforms.scalar)
 console.log(shader.uniforms.vector)
 console.log(shader.uniforms.matrix)
+```
+
+Struct uniforms can also be accessed using the normal dot property syntax.  For example,
+
+```javascript
+shader.uniforms.light[0].color = [1, 0, 0, 1]
 ```
 
 ## Attributes
@@ -160,6 +166,8 @@ console.log(attrib.location)
 
 Internally, these methods just call [`gl.bindAttribLocation`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindAttribLocation.xml) and access the stored location.
 
+**WARNING** Changing the attribute location requires recompiling the program.  Do not dynamically modify this variable in your render loop.
+
 ### `attrib.pointer([type, normalized, stride, offset])`
 A shortcut for `gl.vertexAttribPointer`.  See the [OpenGL man page for details on how this works](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml).  The main difference here is that the WebGL context, size and index are known and so these parameters are bound.
 
@@ -181,6 +189,14 @@ This [disables the vertex attribute pointer](http://www.khronos.org/opengles/sdk
 
 ```javascript
 gl.disableVertexAttribArray(attrib.location)
+```
+
+## Reflection
+
+Finally, the library supports some reflection capabilities.  The set of all uniforms and data types are stored in the "type" property of the shader object,
+
+```javascript
+console.log(shader.types)
 ```
 
 ## Credits
