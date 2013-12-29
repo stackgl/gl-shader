@@ -129,6 +129,19 @@ Struct uniforms can also be accessed using the normal dot property syntax.  For 
 shader.uniforms.light[0].color = [1, 0, 0, 1]
 ```
 
+You can also assign to structs or even entire collections of uniforms by writing to them with an object:
+
+```javascript
+shader.uniforms = {
+  color: [1, 0, 0, 1],
+  intensity: 100.0,
+  light: {
+    position: [0, 0, 0],
+    direction: [1, 0, 0]
+  }
+}
+```
+
 ## Attributes
 
 The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array they have a slightly more complicated interface.  All of the attributes are stored in the `shader.attributes` property.
