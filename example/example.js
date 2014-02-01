@@ -11,8 +11,9 @@ shell.on("gl-init", function() {
     "attribute vec3 position;\
     attribute vec3 color;\
     varying vec3 fcolor;\
+    uniform mat4 mvp;\
     void main() {\
-      gl_Position = vec4(position, 1.0);\
+      gl_Position = mvp * vec4(position, 1.0);\
       fcolor = color;\
     }",
     "precision highp float;\
@@ -46,6 +47,10 @@ shell.on("gl-render", function(t) {
 
   //Set uniforms
   shader.uniforms.tp = [Math.cos(0.001 * Date.now()), 1, 0]
+  shader.uniforms.mvp = [1, 0, 0, 0, 
+                         0, 1, 0, 0, 
+                         0, 0, 1, 0,
+                         0, 0, 0, 1]
 
   //Draw
   gl.drawArrays(gl.TRIANGLES, 0, 3)
