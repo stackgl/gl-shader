@@ -83,7 +83,10 @@ Creates a shader in the WebGL context with the given vertex and fragment shader 
 
 **Throws** If there are any errors when creating the shader.
 
-### `shader.program`
+### `shader.gl`
+A reference to the WebGL context of the shader.
+
+### `shader.handle`
 A handle to the underlying WebGLProgram object that the shader wraps.
 
 ### `shader.bind()`
@@ -144,7 +147,7 @@ shader.uniforms = {
 
 ## Attributes
 
-The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array they have a slightly more complicated interface.  All of the attributes are stored in the `shader.attributes` property.
+The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array the situation is slightly more complicated.  All of the attributes are stored in the `shader.attributes` property.
 
 ### `attrib.set()`
 For non-array attributes you can set the constant value to be broadcast across all vertices.  For example, to set the vertex color of a shader to a constant you could do:

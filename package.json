@@ -1,6 +1,6 @@
 {
   "name": "gl-shader",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "WebGL shader wrapper",
   "main": "index.js",
   "directories": {
@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "uniq": "^0.0.2",
-    "gl-shader-core": "^0.0.2",
+    "gl-shader-core": "^1.0.0",
     "glsl-extract": "^0.0.2",
     "through": "~2.3.4"
   },
