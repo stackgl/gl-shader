@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "uniq": "^0.0.2",
-    "gl-shader-core": "^1.0.0",
+    "gl-shader-core": "^1.1.0",
     "glsl-extract": "^0.0.2",
     "through": "~2.3.4"
   },

@@ -96,6 +96,9 @@ Binds the shader to the currently used program.  Essentially a shorthand for:
 gl.useProgram(shader.program)
 ```
 
+### `shader.dispose()`
+Release all resources associated with the shader
+
 ## Uniforms
 The uniforms for the shader program are packaged up as properties in the `shader.uniforms` object.  For example, to update a scalar uniform you can just assign to it:
 
