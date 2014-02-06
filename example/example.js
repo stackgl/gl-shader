@@ -42,7 +42,6 @@ shell.on("gl-render", function(t) {
   //Set attributes
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   shader.attributes.position.pointer()
-  shader.attributes.position.enable()
   shader.attributes.color = [1, 0, 1]
 
   //Set uniforms

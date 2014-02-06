@@ -48,7 +48,6 @@ shell.on("gl-render", function(t) {
   //Set attributes
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
   shader.attributes.position.pointer()
-  shader.attributes.position.enable()
 
   //Set uniforms
   shader.uniforms.t += 0.01
@@ -88,6 +87,12 @@ A reference to the WebGL context of the shader.
 
 ### `shader.handle`
 A handle to the underlying WebGLProgram object that the shader wraps.
+
+### `shader.fragmentShader`
+A handle to the underlying fragment shader object.
+
+### `shader.vertexShader`
+A handle to the underlying vertex shader object.
 
 ### `shader.bind()`
 Binds the shader to the currently used program.  Essentially a shorthand for:
@@ -152,21 +157,14 @@ shader.uniforms = {
 
 The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array the situation is slightly more complicated.  All of the attributes are stored in the `shader.attributes` property.
 
-### `attrib.set()`
+### `attrib = value`
 For non-array attributes you can set the constant value to be broadcast across all vertices.  For example, to set the vertex color of a shader to a constant you could do:
 
 ```javascript
 shader.attributes.color = [1, 0, 0, 1]
 ```
 
-This internally uses [`gl.vertexAttribnf`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttrib.xml).  You can also assign to the attribute by calling:
-
-```javascript
-shader.attributes.color.set(1, 0, 0, 1)
-
-//Or:
-shader.attributes.color.set([1, 0, 0, 1])
-```
+This internally uses [`gl.vertexAttribnf`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttrib.xml).
 
 ### `attrib.location`
 This property accesses the location of the attribute.  You can assign/read from it to modify the location of the attribute.  For example, you can update the location by doing:
@@ -192,21 +190,6 @@ A shortcut for `gl.vertexAttribPointer`.  See the [OpenGL man page for details o
 * `normalized` specifies whether fixed-point data values should be normalized (`true`) or converted directly as fixed-point values (`false`) when they are accessed.  (Default `false`)
 * `stride` the byte offset between consecutive generic vertex attributes.  (Default: `0`)
 * `offset` offset of the first element of the array in bytes. (Default `0`)
-
-
-### `attrib.enable()`
-This [enables the vertex attribute pointer](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glEnableVertexAttribArray.xml).  It is a short cut for:
-
-```javascript
-gl.enableVertexAttribArray(attrib.location)
-```
-
-### `attrib.disable()`
-This [disables the vertex attribute pointer](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glEnableVertexAttribArray.xml).  It is a short cut for:
-
-```javascript
-gl.disableVertexAttribArray(attrib.location)
-```
 
 ## Reflection
 
