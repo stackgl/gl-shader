@@ -4,7 +4,7 @@ A wrapper for WebGL shaders.  Part of [stack.gl](http://stack.gl)
 
 # Example
 
-Try it out now in your browser:  [http://mikolalysenko.github.io/gl-shader/](http://mikolalysenko.github.io/gl-shader/)
+Try it out now in your browser:  [http://stackgl.github.io/gl-shader/](http://stackgl.github.io/gl-shader/)
 
 ```javascript
 var shell = require('gl-now')()
@@ -59,7 +59,7 @@ shell.on('gl-render', function(t) {
 
 Here is the result:
 
-<img src="https://raw.github.com/mikolalysenko/gl-shader/master/screenshot.png">
+<img src="https://raw.github.com/stackgl/gl-shader/master/screenshot.png">
 
 # Install
 
