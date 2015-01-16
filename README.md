@@ -1,6 +1,6 @@
 gl-shader
 =========
-Simple wrapper for WebGL shaders
+A wrapper for WebGL shaders.  Part of [stack.gl](http://stack.gl)
 
 # Example
 
@@ -177,6 +177,8 @@ shader.uniforms = {
   color:  [1, 0, 1, 1]
 }
 ```
+
+The contents of uniform values are lost when a shader is unbound.
 
 ### Attributes
 
