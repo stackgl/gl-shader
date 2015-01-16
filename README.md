@@ -7,27 +7,27 @@ Simple wrapper for WebGL shaders
 Try it out now in your browser:  [http://mikolalysenko.github.io/gl-shader/](http://mikolalysenko.github.io/gl-shader/)
 
 ```javascript
-var shell = require("gl-now")()
-var createShader = require("gl-shader")
+var shell = require('gl-now')()
+var createShader = require('gl-shader')
 var shader, buffer
 
-shell.on("gl-init", function() {
+shell.on('gl-init', function() {
   var gl = shell.gl
 
   //Create shader
   shader = createShader(gl,
-    "attribute vec3 position;\
+    'attribute vec3 position;\
     varying vec2 uv;\
     void main() {\
       gl_Position = vec4(position, 1.0);\
       uv = position.xy;\
-    }",
-    "precision highp float;\
+    }',
+    'precision highp float;\
     uniform float t;\
     varying vec2 uv;\
     void main() {\
       gl_FragColor = vec4(0.5*(uv+1.0), 0.5*(cos(t)+1.0), 1.0);\
-    }")
+    }'')
 
   //Create vertex buffer
   buffer = gl.createBuffer()
@@ -39,7 +39,7 @@ shell.on("gl-init", function() {
   ]), gl.STATIC_DRAW)
 })
 
-shell.on("gl-render", function(t) {
+shell.on('gl-render', function(t) {
   var gl = shell.gl
 
   //Bind shader
@@ -68,43 +68,68 @@ Here is the result:
 # API
 
 ```javascript
-var createShader = require("gl-shader")
+var createShader = require('gl-shader')
 ```
 
-### `var shader = createShader(gl, vert_src, frag_src)`
-Creates a shader in the WebGL context with the given vertex and fragment shader sources.
 
-* `gl` is the WebGL context to create the shader in
-* `vert_src` is the vertex shader source
-* `frag_src` is the fragment shader source
+### Constructor
 
-**Returns** A `GLShader` object which wraps a WebGL program
+There are two main usages for the constructor.  First,
 
-**Throws** If there are any errors when creating the shader.
+#### `var shader = createShader(vertexSource, fragmentSource[, uniforms, attributes])`
 
-### `shader.gl`
-A reference to the WebGL context of the shader.
+Constructs a wrapped shader object with shims for all of the uniforms and attributes in the program.
 
-### `shader.handle`
-A handle to the underlying WebGLProgram object that the shader wraps.
+* `gl` is the webgl context in which the program will be created
+* `vertexSource` is the source code for the vertex shader
+* `fragmentSource` is the source code for the fragment shader
+* `uniforms` is an (optional) list of all uniforms exported by the shader program
+* `attributes` is an (optional) list of all attributes exported by the shader program
 
-### `shader.fragmentShader`
-A handle to the underlying fragment shader object.
+The format of `uniforms` and `attributes` is consistent with `glslify`'s output
 
-### `shader.vertexShader`
-A handle to the underlying vertex shader object.
+**Returns** A compiled shader object.
 
-### `shader.bind()`
-Binds the shader to the currently used program.  Essentially a shorthand for:
+You can specify a default `location` number for each attribute, otherwise WebGL will bind it automatically. 
 
-```javascript
-gl.useProgram(shader.program)
-```
+#### `var shader = createShader(gl, glslifyResult)`
 
-### `shader.dispose()`
-Release all resources associated with the shader
+Constructs a shader object from the output of `glslify`.
 
-## Uniforms
+* `gl` is a WebGL context
+* `glslify` is the output of `glslify`
+
+**Returns** A wrapped shader object
+
+### Methods
+
+#### `shader.bind()`
+Binds the shader for rendering
+
+#### `shader.update(vertSource, fragSource[, uniforms, attributes])`
+Rebuilds the shader object with new vertex and fragment shaders (same behavior as constructor)
+
+#### `shader.update(glslifyResult)`
+Rebuilds the shader object with new vertex and fragment shaders (same behavior as constructor)
+
+#### `shader.dispose()`
+Deletes the shader program and associated resources.
+
+### Properties
+
+#### `gl`
+The WebGL context associated to the shader
+
+#### `program`
+A reference to the underlying program object in the WebGL context
+
+#### `vertShader`
+A reference to the underlying vertex shader object
+
+#### `fragShader`
+A reference to the underlying fragment shader object
+
+### Uniforms
 The uniforms for the shader program are packaged up as properties in the `shader.uniforms` object.  For example, to update a scalar uniform you can just assign to it:
 
 ```javascript
@@ -140,31 +165,18 @@ Struct uniforms can also be accessed using the normal dot property syntax.  For 
 shader.uniforms.light[0].color = [1, 0, 0, 1]
 ```
 
-You can also assign to structs or even entire collections of uniforms by writing to them with an object:
+### Attributes
 
-```javascript
-shader.uniforms = {
-  color: [1, 0, 0, 1],
-  intensity: 100.0,
-  light: {
-    position: [0, 0, 0],
-    direction: [1, 0, 0]
-  }
-}
-```
+The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array they have a slightly more complicated interface.  All of the attributes are stored in the `shader.attributes` property.
 
-## Attributes
-
-The basic idea behind the attribute interface is similar to that for uniforms, however because attributes can be either a constant value or get values from a vertex array the situation is slightly more complicated.  All of the attributes are stored in the `shader.attributes` property.
-
-### `attrib = value`
+#### `attrib = constant`
 For non-array attributes you can set the constant value to be broadcast across all vertices.  For example, to set the vertex color of a shader to a constant you could do:
 
 ```javascript
 shader.attributes.color = [1, 0, 0, 1]
 ```
 
-This internally uses [`gl.vertexAttribnf`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttrib.xml).
+This internally uses [`gl.vertexAttribnf`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttrib.xml). Setting the attribute will also call `gl.disableVertexAttribArray` on the attribute's location.
 
 ### `attrib.location`
 This property accesses the location of the attribute.  You can assign/read from it to modify the location of the attribute.  For example, you can update the location by doing:
@@ -179,19 +191,17 @@ Or you can read the currently bound location back by just accessing it:
 console.log(attrib.location)
 ```
 
-Internally, these methods just call [`gl.bindAttribLocation`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glBindAttribLocation.xml) and access the stored location.
-
-**WARNING** Changing the attribute location requires recompiling the program.  Do not dynamically modify this variable in your render loop.
+**WARNING** Changing the attribute location requires recompiling the program. This recompilation is deferred until the next call to `.bind()`
 
 ### `attrib.pointer([type, normalized, stride, offset])`
-A shortcut for `gl.vertexAttribPointer`.  See the [OpenGL man page for details on how this works](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml).  The main difference here is that the WebGL context, size and index are known and so these parameters are bound.
+A shortcut for `gl.vertexAttribPointer`/`gl.enableVertexAttribArray`.  See the [OpenGL man page for details on how this works](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml).  The main difference here is that the WebGL context, size and index are known and so these parameters are bound.
 
 * `type` is the type of the pointer (default `gl.FLOAT`)
 * `normalized` specifies whether fixed-point data values should be normalized (`true`) or converted directly as fixed-point values (`false`) when they are accessed.  (Default `false`)
 * `stride` the byte offset between consecutive generic vertex attributes.  (Default: `0`)
 * `offset` offset of the first element of the array in bytes. (Default `0`)
 
-## Reflection
+### Reflection
 
 Finally, the library supports some reflection capabilities.  The set of all uniforms and data types are stored in the "type" property of the shader object,
 
@@ -199,5 +209,8 @@ Finally, the library supports some reflection capabilities.  The set of all unif
 console.log(shader.types)
 ```
 
-## Credits
-(c) 2013 Mikola Lysenko. MIT License
+This reflects the uniform and attribute parameters that were passed to the shader constructor.
+
+## Acknowledgements
+
+(c) 2013-2015 Mikola Lysenko.  MIT License
