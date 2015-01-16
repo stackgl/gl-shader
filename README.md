@@ -27,7 +27,7 @@ shell.on('gl-init', function() {
     varying vec2 uv;\
     void main() {\
       gl_FragColor = vec4(0.5*(uv+1.0), 0.5*(cos(t)+1.0), 1.0);\
-    }'')
+    }')
 
   //Create vertex buffer
   buffer = gl.createBuffer()
@@ -106,7 +106,7 @@ Constructs a shader object from the output of `glslify`.
 #### `shader.bind()`
 Binds the shader for rendering
 
-#### `shader.update(vertSource, fragSource[, uniforms, attributes])`
+#### `shader.update(vertSource,fragSource[,uniforms,attributes])`
 Rebuilds the shader object with new vertex and fragment shaders (same behavior as constructor)
 
 #### `shader.update(glslifyResult)`
@@ -151,18 +151,31 @@ shader.uniforms.matrix = [ 1, 0, 1, 0,
                            0, 0, 0, 1 ]
 ```
 
-You can also read the value of uniform too if the underlying shader is currently bound.  For example,
+You can read the value of uniform too if the underlying shader is currently bound.  For example,
 
 ```javascript
+shader.bind()
 console.log(shader.uniforms.scalar)
 console.log(shader.uniforms.vector)
 console.log(shader.uniforms.matrix)
 ```
 
-Struct uniforms can also be accessed using the normal dot property syntax.  For example,
+Struct uniforms can also be accessed using the normal dot property syntax:
 
 ```javascript
 shader.uniforms.light[0].color = [1, 0, 0, 1]
+```
+
+It is also possible to initialize uniforms in bulk by assigning an object:
+
+```javascript
+shader.uniforms = {
+  model:  [1, 0, 0, 0,
+           0, 1, 0, 0,
+           0, 0, 1, 0,
+           0, 0, 0, 1],
+  color:  [1, 0, 1, 1]
+}
 ```
 
 ### Attributes
@@ -178,7 +191,7 @@ shader.attributes.color = [1, 0, 0, 1]
 
 This internally uses [`gl.vertexAttribnf`](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttrib.xml). Setting the attribute will also call `gl.disableVertexAttribArray` on the attribute's location.
 
-### `attrib.location`
+#### `attrib.location`
 This property accesses the location of the attribute.  You can assign/read from it to modify the location of the attribute.  For example, you can update the location by doing:
 
 ```javascript
@@ -193,7 +206,7 @@ console.log(attrib.location)
 
 **WARNING** Changing the attribute location requires recompiling the program. This recompilation is deferred until the next call to `.bind()`
 
-### `attrib.pointer([type, normalized, stride, offset])`
+#### `attrib.pointer([type, normalized, stride, offset])`
 A shortcut for `gl.vertexAttribPointer`/`gl.enableVertexAttribArray`.  See the [OpenGL man page for details on how this works](http://www.khronos.org/opengles/sdk/docs/man/xhtml/glVertexAttribPointer.xml).  The main difference here is that the WebGL context, size and index are known and so these parameters are bound.
 
 * `type` is the type of the pointer (default `gl.FLOAT`)
