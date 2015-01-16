@@ -10,10 +10,10 @@ shell.on("gl-init", function() {
   shader = makeShader(gl,
     "attribute vec3 position;\
     attribute vec3 color;\
+    uniform mat4 matrix;\
     varying vec3 fcolor;\
-    uniform mat4 mvp;\
     void main() {\
-      gl_Position = mvp * vec4(position, 1.0);\
+      gl_Position = matrix * vec4(position, 1.0);\
       fcolor = color;\
     }",
     "precision highp float;\
@@ -22,6 +22,9 @@ shell.on("gl-init", function() {
     void main() {\
       gl_FragColor = vec4(fcolor + tp, 1.0);\
     }")
+
+  shader.attributes.position.location = 0
+  shader.attributes.color.location = 1
 
   //Create vertex buffer
   buffer = gl.createBuffer()
@@ -46,11 +49,11 @@ shell.on("gl-render", function(t) {
 
   //Set uniforms
   shader.uniforms.tp = [Math.cos(0.001 * Date.now()), 1, 0]
-  shader.uniforms.mvp = [1, 0, 0, 0, 
+  shader.uniforms.matrix = [1, 0, 0, 0, 
                          0, 1, 0, 0, 
                          0, 0, 1, 0,
                          0, 0, 0, 1]
-
+  
   //Draw
   gl.drawArrays(gl.TRIANGLES, 0, 3)
 })

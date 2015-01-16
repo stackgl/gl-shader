@@ -216,6 +216,43 @@ A shortcut for `gl.vertexAttribPointer`/`gl.enableVertexAttribArray`.  See the [
 * `stride` the byte offset between consecutive generic vertex attributes.  (Default: `0`)
 * `offset` offset of the first element of the array in bytes. (Default `0`)
 
+#### Matrix attributes
+
+Matrix attributes are also supported, however there are a few subtle difference.  Due to WebGL limitations, d-dimensional matrix attributes require d separate attribute locations.  If `matrix` is a matrix attribute, then the rows of the matrix can be accessed independently using:
+
+```javascript
+//First row of matrix
+shader.attributes.matrix[0]
+
+//Second row
+shader.attributes.matrix[1]
+
+// ... etc.
+```
+
+The interface for these attributes is identical to the above interfaces for vector attributes (support constant setters, `.pointer()`, and `.location`).
+
+There is also a bulk interface which simplifies working with the matrix as a whole unit.  For example, it is possible to update the location of each row of the matrix simultaneously by assigning it a vector value:
+
+```javascript
+shader.attributes.matrix.location = [1, 2, 3, 4]
+```
+
+Similarly, if the matrix attribute is stored as a contiguous range in memory, the pointer for each row can be set using `.pointer()`.  For example, if `matrix` is a 4x4 matrix attribute then,
+
+```javascript
+shader.attributes.matrix.pointer(gl.FLOAT, false, 16, 0)
+```
+
+is equivalent to,
+
+```javascript
+shader.attributes.matrix[0].pointer(gl.FLOAT, false, 16, 0)
+shader.attributes.matrix[0].pointer(gl.FLOAT, false, 16, 4)
+shader.attributes.matrix[0].pointer(gl.FLOAT, false, 16, 8)
+shader.attributes.matrix[0].pointer(gl.FLOAT, false, 16, 12)
+```
+
 ### Reflection
 
 Finally, the library supports some reflection capabilities.  The set of all uniforms and data types are stored in the "type" property of the shader object,

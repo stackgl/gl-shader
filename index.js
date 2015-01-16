@@ -48,6 +48,13 @@ proto.dispose = function() {
   this._vref      = null
 }
 
+function compareAttributes(a, b) {
+  if(a.name < b.name) {
+    return -1
+  }
+  return 1
+}
+
 //Update export hook for glslify-live
 proto.update = function(
     vertSource
@@ -106,28 +113,49 @@ proto.update = function(
   //Sort attributes lexicographically
   // overrides undefined WebGL behavior for attribute locations
   attributes = attributes.slice()
-  attributes.sort(function(a, b) {
-    if(a.name < b.name) {
-      return -1
-    } else if(a.name > b.name) {
-      return 1
-    }
-    return 0
-  })
+  attributes.sort(compareAttributes)
 
-  //Extract names
-  var attributeNames = attributes.map(function(attr) {
-    return attr.name
-  })
-
-  //Get default location
-  var attributeLocations = attributes.map(function(attr) {
-    if('location' in attr) {
-      return attr.location|0
+  //Convert attribute types, read out locations
+  var attributeUnpacked  = []
+  var attributeNames     = []
+  var attributeLocations = []
+  for(var i=0; i<attributes.length; ++i) {
+    var attr = attributes[i]
+    if(attr.type.indexOf('mat') >= 0) {
+      var size = attr.type.charAt(attr.type.length-1)|0
+      var locVector = new Array(size)
+      for(var j=0; j<size; ++j) {
+        locVector[j] = attributeLocations.length
+        attributeNames.push(attr.name + '[' + j + ']')
+        if(typeof attr.location === 'number') {
+          attributeLocations.push(attr.location + j)
+        } else if(Array.isArray(attr.location) && 
+                  attr.location.length === size &&
+                  typeof attr.location[j] === 'number') {
+          attributeLocations.push(attr.location[j]|0)
+        } else {
+          attributeLocations.push(-1)
+        }
+      }
+      attributeUnpacked.push({
+        name: attr.name,
+        type: attr.type,
+        locations: locVector
+      })
     } else {
-      return -1
+      attributeUnpacked.push({
+        name: attr.name,
+        type: attr.type,
+        locations: [ attributeLocations.length ]
+      })
+      attributeNames.push(attr.name)
+      if(typeof attr.location === 'number') {
+        attributeLocations.push(attr.location|0)
+      } else {
+        attributeLocations.push(-1)
+      }
     }
-  })
+  }
 
   //For all unspecified attributes, assign them lexicographically min attribute
   var curLocation = 0
@@ -142,14 +170,13 @@ proto.update = function(
 
   //Rebuild program and recompute all uniform locations
   var uniformLocations = new Array(uniforms.length)
-  function relink(prog) {
+  function relink() {
     wrapper.program = shaderCache.program(
         gl
       , wrapper._vref
       , wrapper._fref
       , attributeNames
-      , attributeLocations
-      , prog)
+      , attributeLocations)
 
     for(var i=0; i<uniforms.length; ++i) {
       uniformLocations[i] = gl.getUniformLocation(
@@ -174,7 +201,7 @@ proto.update = function(
   wrapper.attributes = createAttributeWrapper(
       gl
     , wrapper
-    , attributes
+    , attributeUnpacked
     , attributeLocations)
 
   //Generate uniform wrappers
