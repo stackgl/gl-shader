@@ -130,9 +130,10 @@ A reference to the underlying vertex shader object
 A reference to the underlying fragment shader object
 
 ### Uniforms
-The uniforms for the shader program are packaged up as properties in the `shader.uniforms` object.  For example, to update a scalar uniform you can just assign to it:
+The uniforms for the shader program are packaged up as properties in the `shader.uniforms` object.  The shader must be bound before the uniforms are assigned. For example, to update a scalar uniform you can just assign to it:
 
 ```javascript
+shader.bind()
 shader.uniforms.scalar = 1.0
 ```
 
