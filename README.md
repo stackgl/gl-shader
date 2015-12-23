@@ -86,7 +86,7 @@ Constructs a wrapped shader object with shims for all of the uniforms and attrib
 * `uniforms` is an (optional) list of all uniforms exported by the shader program
 * `attributes` is an (optional) list of all attributes exported by the shader program
 
-The optional `uniforms` and `attributes` arrays have the following format.
+The optional `uniforms` and `attributes` arrays have the following format. This will be extracted at run-time from the shader, so you can typically omit the `uniforms` and `attributes` arguments.
 
 ```js
 {
