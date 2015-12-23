@@ -86,18 +86,33 @@ Constructs a wrapped shader object with shims for all of the uniforms and attrib
 * `uniforms` is an (optional) list of all uniforms exported by the shader program
 * `attributes` is an (optional) list of all attributes exported by the shader program
 
-The format of `uniforms` and `attributes` is consistent with `glslify`'s output
+The optional `uniforms` and `attributes` arrays have the following format.
 
-**Returns** A compiled shader object.
+```js
+{
+  uniforms: [
+    { type: 'mat4', name: 'projection' },
+    { type: 'sampler2D', name: 'texture0' }
+  ],
+  attribuets: [
+    { type: 'vec3', name: 'position' }
+  ]
+}
+```
 
 You can specify a default `location` number for each attribute, otherwise WebGL will bind it automatically. 
 
-#### `var shader = createShader(gl, glslifyResult)`
+**Returns** A compiled shader object.
 
-Constructs a shader object from the output of `glslify`.
+#### `var shader = createShader(gl, opt)`
+
+The same as above, but takes an object instead of a parameter list.
 
 * `gl` is a WebGL context
-* `glslify` is the output of `glslify`
+* `opt.vertex` a vertex shader source
+* `opt.fragment` a fragment shader source
+* `opt.uniforms` (optional) a list of uniforms
+* `opt.attributes` (optional) a list of attributes
 
 **Returns** A wrapped shader object
 
@@ -109,7 +124,7 @@ Binds the shader for rendering
 #### `shader.update(vertSource,fragSource[,uniforms,attributes])`
 Rebuilds the shader object with new vertex and fragment shaders (same behavior as constructor)
 
-#### `shader.update(glslifyResult)`
+#### `shader.update(opt)`
 Rebuilds the shader object with new vertex and fragment shaders (same behavior as constructor)
 
 #### `shader.dispose()`
