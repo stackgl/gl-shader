@@ -76,7 +76,7 @@ var createShader = require('gl-shader')
 
 There are two main usages for the constructor.  First,
 
-#### `var shader = createShader(vertexSource, fragmentSource[, uniforms, attributes])`
+#### `var shader = createShader(gl, vertexSource, fragmentSource[, uniforms, attributes])`
 
 Constructs a wrapped shader object with shims for all of the uniforms and attributes in the program.
 
