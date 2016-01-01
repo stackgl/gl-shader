@@ -5,14 +5,15 @@ var createAttributeWrapper = require('./lib/create-attributes')
 var makeReflect            = require('./lib/reflect')
 var shaderCache            = require('./lib/shader-cache')
 var runtime                = require('./lib/runtime-reflect')
+var GLError                = require("./lib/GLError")
 
 //Shader object
 function Shader(gl) {
   this.gl         = gl
 
   //Default initialize these to null
-  this._vref      = 
-  this._fref      = 
+  this._vref      =
+  this._fref      =
   this._relink    =
   this.vertShader =
   this.fragShader =
@@ -42,9 +43,9 @@ proto.dispose = function() {
   this.types      =
   this.vertShader =
   this.fragShader =
-  this.program    = 
-  this._relink    = 
-  this._fref      = 
+  this.program    =
+  this._relink    =
+  this._fref      =
   this._vref      = null
 }
 
@@ -87,7 +88,7 @@ proto.update = function(
     pfref.dispose()
   }
   wrapper.fragShader = wrapper._fref.shader
-  
+
   //If uniforms/attributes is not specified, use RT reflection
   if(!uniforms || !attributes) {
 
@@ -98,10 +99,9 @@ proto.update = function(
     gl.linkProgram(testProgram)
     if(!gl.getProgramParameter(testProgram, gl.LINK_STATUS)) {
       var errLog = gl.getProgramInfoLog(testProgram)
-      console.error('gl-shader: Error linking program:', errLog)
-      throw new Error('gl-shader: Error linking program:' + errLog)
+      throw new GLError(errLog, 'Error linking program:' + errLog)
     }
-    
+
     //Load data from runtime
     uniforms   = uniforms   || runtime.uniforms(gl, testProgram)
     attributes = attributes || runtime.attributes(gl, testProgram)
@@ -129,7 +129,7 @@ proto.update = function(
         attributeNames.push(attr.name + '[' + j + ']')
         if(typeof attr.location === 'number') {
           attributeLocations.push(attr.location + j)
-        } else if(Array.isArray(attr.location) && 
+        } else if(Array.isArray(attr.location) &&
                   attr.location.length === size &&
                   typeof attr.location[j] === 'number') {
           attributeLocations.push(attr.location[j]|0)
