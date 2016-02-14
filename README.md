@@ -94,7 +94,7 @@ The optional `uniforms` and `attributes` arrays have the following format. This 
     { type: 'mat4', name: 'projection' },
     { type: 'sampler2D', name: 'texture0' }
   ],
-  attribuets: [
+  attributes: [
     { type: 'vec3', name: 'position' }
   ]
 }
