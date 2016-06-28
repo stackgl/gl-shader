@@ -63,12 +63,12 @@ Here is the result:
 
 # Install
 
-    npm install gl-shader
+    npm install @lfdoherty/gl-shader
 
 # API
 
 ```javascript
-var createShader = require('gl-shader')
+var createShader = require('@lfdoherty/gl-shader')
 ```
 
 

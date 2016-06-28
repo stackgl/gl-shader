@@ -1,5 +1,5 @@
 {
-  "name": "gl-shader",
+  "name": "@lfdoherty/gl-shader",
   "version": "4.2.0",
   "description": "WebGL shader wrapper",
   "main": "index.js",
@@ -15,11 +15,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "beefy --open example/example.js"
+    "start": "beefy example/example.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/stackgl/gl-shader.git"
+    "url": "git://github.com/lfdoherty/gl-shader.git"
   },
   "keywords": [
     "webgl",
@@ -35,8 +35,5 @@
   "author": "Mikola Lysenko",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "gitHead": "e28ce1d36277aeb6d109d886e847c7cdc1903cd9",
-  "bugs": {
-    "url": "https://github.com/stackgl/gl-shader/issues"
-  }
+  "gitHead": "e28ce1d36277aeb6d109d886e847c7cdc1903cd9"
 }
