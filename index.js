@@ -56,6 +56,21 @@ function compareAttributes(a, b) {
   return 1
 }
 
+proto.toString = function(){
+  var result = {}
+  if(!this.uniforms){
+    result.neverBound = true;
+  }else{
+    result.types = this.types
+    result.uniforms = {}
+    var local = this;
+    Object.keys(this.types.uniforms).forEach(function(uniformName){
+      result.uniforms[uniformName] = local.uniforms[uniformName]
+    })
+  }
+  return JSON.stringify(result)
+}
+
 //Update export hook for glslify-live
 proto.update = function(
     vertSource
