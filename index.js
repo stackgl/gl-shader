@@ -10,6 +10,7 @@ var GLError                = require("./lib/GLError")
 //Shader object
 function Shader(gl) {
   this.gl         = gl
+  this.gl.lastAttribCount = 0  // fixme where else should we store info, safe but not nice on the gl object
 
   //Default initialize these to null
   this._vref      =
@@ -29,10 +30,38 @@ proto.bind = function() {
   if(!this.program) {
     this._relink()
   }
+
+  // ensuring that we have the right number of enabled vertex attributes
+  var i
+  var newAttribCount = this.gl.getProgramParameter(this.program, this.gl.ACTIVE_ATTRIBUTES) // more robust approach
+  //var newAttribCount = Object.keys(this.attributes).length // avoids the probably immaterial introspection slowdown
+  var oldAttribCount = this.gl.lastAttribCount
+  if(newAttribCount > oldAttribCount) {
+    for(i = oldAttribCount; i < newAttribCount; i++) {
+      this.gl.enableVertexAttribArray(i)
+    }
+  } else if(oldAttribCount > newAttribCount) {
+    for(i = newAttribCount; i < oldAttribCount; i++) {
+      this.gl.disableVertexAttribArray(i)
+    }
+  }
+
+  this.gl.lastAttribCount = newAttribCount
+
   this.gl.useProgram(this.program)
 }
 
 proto.dispose = function() {
+
+  // disabling vertex attributes so new shader starts with zero
+  // and it's also useful if all shaders are disposed but the
+  // gl context is reused for subsequent replotting
+  var oldAttribCount = this.gl.lastAttribCount
+  for (var i = 0; i < oldAttribCount; i++) {
+    this.gl.disableVertexAttribArray(i)
+  }
+  this.gl.lastAttribCount = 0
+
   if(this._fref) {
     this._fref.dispose()
   }
@@ -119,7 +148,8 @@ proto.update = function(
   var attributeUnpacked  = []
   var attributeNames     = []
   var attributeLocations = []
-  for(var i=0; i<attributes.length; ++i) {
+  var i
+  for(i=0; i<attributes.length; ++i) {
     var attr = attributes[i]
     if(attr.type.indexOf('mat') >= 0) {
       var size = attr.type.charAt(attr.type.length-1)|0
@@ -159,7 +189,7 @@ proto.update = function(
 
   //For all unspecified attributes, assign them lexicographically min attribute
   var curLocation = 0
-  for(var i=0; i<attributeLocations.length; ++i) {
+  for(i=0; i<attributeLocations.length; ++i) {
     if(attributeLocations[i] < 0) {
       while(attributeLocations.indexOf(curLocation) >= 0) {
         curLocation += 1
