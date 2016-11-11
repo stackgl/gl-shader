@@ -1,6 +1,6 @@
 {
   "name": "@lfdoherty/gl-shader",
-  "version": "4.2.0",
+  "version": "4.2.3",
   "description": "WebGL shader wrapper",
   "main": "index.js",
   "directories": {
@@ -32,8 +32,7 @@
     "3d",
     "gl"
   ],
-  "author": "Mikola Lysenko",
+  "author": "Mikola Lysenko, Liam Doherty",
   "license": "MIT",
-  "readmeFilename": "README.md",
-  "gitHead": "e28ce1d36277aeb6d109d886e847c7cdc1903cd9"
+  "readmeFilename": "README.md"
 }
