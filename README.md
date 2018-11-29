@@ -1,6 +1,6 @@
 gl-shader
 =========
-A wrapper for WebGL shaders.  Part of [stack.gl](http://stack.gl)
+A wrapper for WebGL shaders.  Part of [stack.gl](http://stackgl.github.io/)
 
 # Example
 
